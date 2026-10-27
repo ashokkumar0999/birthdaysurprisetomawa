@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A heartwarming birthday surprise — made with love for someone truly special.">
+  <title>🎂 Happy Birthday — A Gift Is Waiting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════════
+       VIP Security Gatekeeper / Passcode Screen
+       ════════════════════════════════════════ -->
+  <div id="auth-gatekeeper" class="auth-gatekeeper">
+    <!-- Ambient floating sparkles & emojis -->
+    <div class="auth-ambient-wrap" aria-hidden="true">
+      <span class="auth-float-item af-1">🌸</span>
+      <span class="auth-float-item af-2">✨</span>
+      <span class="auth-float-item af-3">💖</span>
+      <span class="auth-float-item af-4">⭐</span>
+      <span class="auth-float-item af-5">🎀</span>
+    </div>
+
+    <!-- Colorful Glassmorphic Auth Card -->
+    <div class="auth-card" id="auth-card">
+      <div class="auth-lock-icon-wrap">
+        <div class="auth-lock-circle">
+          <span class="auth-lock-emoji" id="auth-lock-emoji">🔐</span>
+        </div>
+      </div>
+
+      <div class="auth-pill-badge">
+        <span class="auth-badge-dot">●</span>
+        <span>VIP ACCESS ONLY</span>
+        <span class="auth-badge-dot">●</span>
+      </div>
+
+      <h1 class="auth-title">Who Goes There? 🧐</h1>
+      <p class="auth-subtitle">This birthday celebration is strictly guarded!<br>Enter the secret passcode to unlock
+        Mawa's world ♡</p>
+
+      <form id="auth-form" class="auth-form" autocomplete="off" onsubmit="return false;">
+        <div class="auth-input-group" id="auth-input-group">
+          <span class="auth-input-icon">🔑</span>
+          <input type="text" id="auth-code-input" class="auth-input" placeholder="Enter secret code..."
+            autocomplete="off" autocapitalize="characters" spellcheck="false" required autofocus />
+          <button type="button" id="auth-clear-btn" class="auth-clear-btn" aria-label="Clear input">✕</button>
+        </div>
+
+        <div id="auth-feedback" class="auth-feedback" aria-live="polite"></div>
+
+        <button type="submit" id="auth-submit-btn" class="auth-btn-primary">
+          <span>UNLOCK SURPRISE</span>
+          <svg class="auth-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       Grand Birthday Curtain Opening Loader
+       ════════════════════════════════════════ -->
+  <div id="curtain-loader" class="curtain-loader">
+    <div class="curtain-half curtain-left">
+      <div class="curtain-gold-trim"></div>
+    </div>
+    <div class="curtain-half curtain-right">
+      <div class="curtain-gold-trim"></div>
+    </div>
+    <div class="curtain-center-badge" id="curtain-badge">
+      <div class="curtain-icon-wrap">
+        <span class="curtain-sparkle">✨</span>
+        <div class="curtain-bow">🎀</div>
+        <span class="curtain-sparkle">✨</span>
+      </div>
+      <p class="curtain-title">A Special Surprise</p>
+      <p class="curtain-subtitle">opening just for you...</p>
+      <div class="curtain-progress-track">
+        <div class="curtain-progress-fill" id="curtain-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Confetti Burst Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Hidden Audio Elements -->
+  <!-- 1. Global Background Music (Speaker toggle on bottom-right) -->
+  <audio id="global-bg-audio" preload="auto" src="assets/Helmut Schenker - Happy Birthday (Piano Version).mp3"
+    loop></audio>
+
+  <!-- 2. Dedicated Wish Page Song (Screen 3 Music Card) -->
+  <audio id="birthday-audio" preload="auto" src="assets/ReelAudio-15234.mp3"></audio>
+
+  <!-- Hidden SVG Sprite for 3D Hearts & Stars -->
+  <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- 3D Glossy Pink Heart -->
+      <g id="icon-heart-3d">
+        <defs>
+          <radialGradient id="hGrad" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#FFBED3" />
+            <stop offset="45%" stop-color="#FF528A" />
+            <stop offset="100%" stop-color="#DE1A59" />
+          </radialGradient>
+          <filter id="hGlow" x="-25%" y="-25%" width="150%" height="150%">
+            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="rgba(222,26,89,0.32)" />
+          </filter>
+        </defs>
+        <path
+          d="M16 28 C8 21 3 15 3 9.5 C3 5 6.5 2 11 2 C13.8 2 15.3 3.5 16 4.8 C16.7 3.5 18.2 2 21 2 C25.5 2 29 5 29 9.5 C29 15 24 21 16 28 Z"
+          fill="url(#hGrad)" filter="url(#hGlow)" />
+        <ellipse cx="9" cy="7" rx="3.2" ry="1.8" transform="rotate(-30 9 7)" fill="rgba(255,255,255,0.72)" />
+      </g>
+      <!-- 3D Glossy Golden Star -->
+      <g id="icon-star-3d">
+        <defs>
+          <radialGradient id="sGrad" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#FFF9C4" />
+            <stop offset="48%" stop-color="#FFD54F" />
+            <stop offset="100%" stop-color="#FFA000" />
+          </radialGradient>
+          <filter id="sGlow" x="-25%" y="-25%" width="150%" height="150%">
+            <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="rgba(255,160,0,0.4)" />
+          </filter>
+        </defs>
+        <path d="M16 2 L20 11 L30 12 L22 19 L25 29 L16 23 L7 29 L10 19 L2 12 L12 11 Z" fill="url(#sGrad)"
+          filter="url(#sGlow)" />
+        <circle cx="16" cy="6" r="1.6" fill="rgba(255,255,255,0.85)" />
+      </g>
+    </defs>
+  </svg>
+
+  <!-- ════════════════════════════════════════
+       App Container — All 7 Screens
+       ════════════════════════════════════════ -->
+  <div class="app-container">
+
+    <!-- ════════════════════════════════════════
+         Top Corner Floating Navigation (Top-Left: Back, Top-Right: Next)
+         ════════════════════════════════════════ -->
+    <button id="nav-btn-prev" class="corner-nav-btn nav-btn-prev" title="Previous Page" aria-label="Previous Page">
+      <svg class="nav-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span class="nav-btn-text">Back</span>
+    </button>
+
+    <button id="nav-btn-next" class="corner-nav-btn nav-btn-next" title="Next Page" aria-label="Next Page">
+      <span class="nav-btn-text">Next</span>
+      <svg class="nav-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
+    <!-- ════════════════════════════════════════
+         Floating Bottom-Right Music Speaker Toggle (Mute/Play Continuous Loop)
+         ════════════════════════════════════════ -->
+    <button id="global-music-toggle" class="global-music-toggle" title="Play Background Music"
+      aria-label="Play Background Music">
+      <div class="music-toggle-pulse" aria-hidden="true"></div>
+      <div class="music-toggle-icon-wrap">
+        <!-- Muted Speaker Icon (Default state) -->
+        <svg class="music-icon icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+        <!-- Playing Speaker Icon with Sound Waves -->
+        <svg class="music-icon icon-playing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </div>
+      <!-- Subtle Floating Music Notes when Active -->
+      <span class="music-note-float mf-1" aria-hidden="true">♪</span>
+      <span class="music-note-float mf-2" aria-hidden="true">♫</span>
+    </button>
+
+    <!-- ═══════ SCREEN 1: Welcome Landing ═══════ -->
+    <section id="screen-welcome" class="screen active">
+      <!-- Ambient Floating 3D Hearts & Golden Stars -->
+      <div class="welcome-floaters" aria-hidden="true">
+        <svg class="float-item h-left-top" viewBox="0 0 32 32">
+          <use href="#icon-heart-3d" />
+        </svg>
+        <svg class="float-item s-left-top" viewBox="0 0 32 32">
+          <use href="#icon-star-3d" />
+        </svg>
+        <svg class="float-item h-left-mid" viewBox="0 0 32 32">
+          <use href="#icon-heart-3d" />
+        </svg>
+        <svg class="float-item s-left-bot" viewBox="0 0 32 32">
+          <use href="#icon-star-3d" />
+        </svg>
+        <svg class="float-item h-right-top" viewBox="0 0 32 32">
+          <use href="#icon-heart-3d" />
+        </svg>
+        <svg class="float-item s-right-top" viewBox="0 0 32 32">
+          <use href="#icon-star-3d" />
+        </svg>
+        <svg class="float-item h-right-mid" viewBox="0 0 32 32">
+          <use href="#icon-heart-3d" />
+        </svg>
+        <svg class="float-item s-right-bot" viewBox="0 0 32 32">
+          <use href="#icon-star-3d" />
+        </svg>
+        <svg class="float-item h-right-bot" viewBox="0 0 32 32">
+          <use href="#icon-heart-3d" />
+        </svg>
+      </div>
+
+      <!-- Main Central Composition -->
+      <div class="welcome-content">
+
+        <!-- 1. Top Pill Badge with doodle sparkles -->
+        <div class="welcome-badge-wrapper">
+          <svg class="badge-doodle doodle-left" viewBox="0 0 32 20" fill="none" aria-hidden="true">
+            <path d="M4 13 C10 5, 18 16, 26 8" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+            <circle cx="8" cy="6" r="1.5" fill="#FF7EA5" />
+            <circle cx="28" cy="6" r="1.2" fill="#FFB7CD" />
+          </svg>
+          <div class="pill-badge welcome-pill" id="badge-welcome">
+            <span class="badge-icon">
+              <svg class="badge-svg-envelope" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="2" y="5" width="20" height="15" rx="3" fill="#FFF0F5" stroke="#FF5C8D" stroke-width="1.8" />
+                <path d="M2 7 L12 14 L22 7" stroke="#FF5C8D" stroke-width="1.8" stroke-linejoin="round" />
+                <circle cx="12" cy="13.5" r="2.8" fill="#FF2E6D" />
+                <path
+                  d="M12 14.8 C11.2 14 10.5 13.4 10.5 12.9 C10.5 12.4 10.9 12.1 11.3 12.1 C11.6 12.1 11.9 12.3 12 12.5 C12.1 12.3 12.4 12.1 12.7 12.1 C13.1 12.1 13.5 12.4 13.5 12.9 C13.5 13.4 12.8 14 12 14.8 Z"
+                  fill="#FFFFFF" />
+              </svg>
+            </span>
+            <span class="badge-text">A GIFT IS WAITING</span>
+          </div>
+          <svg class="badge-doodle doodle-right" viewBox="0 0 32 20" fill="none" aria-hidden="true">
+            <path d="M6 8 C14 16, 22 5, 28 13" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+            <circle cx="24" cy="6" r="1.5" fill="#FF7EA5" />
+            <circle cx="5" cy="14" r="1.2" fill="#FFB7CD" />
+          </svg>
+        </div>
+
+        <!-- 2. Main Heading with hand-drawn doodle heart -->
+        <div class="welcome-heading-wrapper">
+          <h1 class="welcome-title" id="welcome-title">Happy Birthday Mawa</h1>
+          <svg class="title-heart-doodle" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <path d="M20 32 C10 24 5 17 8 11 C11 5 19 8 21 12 C23 8 31 5 34 11 C37 17 32 24 22 32 Z" stroke="#FF4F8E"
+              stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255, 79, 142, 0.12)" />
+            <line x1="23" y1="3" x2="25" y2="1" stroke="#FF4F8E" stroke-width="2.2" stroke-linecap="round" />
+            <line x1="36" y1="5" x2="40" y2="3" stroke="#FF4F8E" stroke-width="2.2" stroke-linecap="round" />
+            <line x1="38" y1="17" x2="42" y2="18" stroke="#FF4F8E" stroke-width="2.2" stroke-linecap="round" />
+          </svg>
+        </div>
+
+        <!-- 3. Heart Flourish Divider -->
+        <div class="welcome-flourish" aria-hidden="true">
+          <span class="flourish-line"></span>
+          <span class="flourish-heart">♡</span>
+          <span class="flourish-line"></span>
+        </div>
+
+        <!-- 4. Subtitle -->
+        <p class="welcome-subtitle" id="welcome-subtitle">someone made you something ♡</p>
+
+        <!-- 5. Central Classic Photo Frame -->
+        <div class="medallion-container">
+          <!-- Doodles hugging frame -->
+          <svg class="medallion-doodle doodle-bunny-left" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path d="M18 28 C9 20 6 14 9 9 C12 4 18 6 20 10 C22 6 28 4 31 9 C34 14 31 20 22 28 Z" stroke="#FF4F8E"
+              stroke-width="2.4" stroke-linecap="round" fill="rgba(255, 79, 142, 0.1)" />
+            <path d="M6 30 C10 32 14 34 18 35" stroke="#FF7EA5" stroke-width="1.8" stroke-dasharray="2 3"
+              stroke-linecap="round" />
+          </svg>
+
+          <svg class="medallion-doodle doodle-bunny-right" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <path d="M12 8 C14 14 13 18 11 22" stroke="#FF4F8E" stroke-width="2.4" stroke-linecap="round" />
+            <circle cx="10" cy="27" r="1.6" fill="#FF4F8E" />
+            <path d="M22 10 L26 14" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+            <path d="M22 20 L27 21" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+          </svg>
+
+          <!-- 3D Float items framing frame -->
+          <svg class="medallion-floater med-h-top" viewBox="0 0 32 32">
+            <use href="#icon-heart-3d" />
+          </svg>
+          <svg class="medallion-floater med-h-left" viewBox="0 0 32 32">
+            <use href="#icon-heart-3d" />
+          </svg>
+          <svg class="medallion-floater med-h-right" viewBox="0 0 32 32">
+            <use href="#icon-heart-3d" />
+          </svg>
+          <svg class="medallion-floater med-s-left" viewBox="0 0 32 32">
+            <use href="#icon-star-3d" />
+          </svg>
+          <svg class="medallion-floater med-s-right" viewBox="0 0 32 32">
+            <use href="#icon-star-3d" />
+          </svg>
+          <svg class="medallion-floater med-h-bot-right" viewBox="0 0 32 32">
+            <use href="#icon-heart-3d" />
+          </svg>
+
+          <!-- Classic Picture Frame (for Friend's Photo) -->
+          <div class="classic-photo-frame medallion-frame" id="welcome-frame">
+            <!-- Golden Corner Filigree Brackets -->
+            <span class="frame-corner fc-tl" aria-hidden="true"></span>
+            <span class="frame-corner fc-tr" aria-hidden="true"></span>
+            <span class="frame-corner fc-bl" aria-hidden="true"></span>
+            <span class="frame-corner fc-br" aria-hidden="true"></span>
+
+            <!-- Passe-Partout Matting -->
+            <div class="frame-matting">
+              <div class="frame-inner-window">
+                <img id="mascot-welcome" class="mascot-img-welcome"
+                  src="assets/Mawa1.jpeg" alt="Birthday photo">
+                <div class="frame-glass-shine" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Primary Button with Radiating Sparkles -->
+        <div class="welcome-btn-wrapper">
+          <span class="btn-sparkle-burst spark-top-right">✦</span>
+          <span class="btn-sparkle-burst spark-bottom-left">✦</span>
+
+          <button id="btn-open-gift" class="btn-primary btn-welcome-cta">
+            <span class="btn-gift-icon">
+              <!-- Cute 3D Yellow Gift Box with Red Ribbon & Bow -->
+              <svg viewBox="0 0 32 32" width="26" height="26" fill="none">
+                <rect x="5" y="14" width="22" height="15" rx="3" fill="#FFD13B" stroke="#E5A610" stroke-width="1.2" />
+                <rect x="3" y="10" width="26" height="6" rx="2" fill="#FFE066" stroke="#E5A610" stroke-width="1.2" />
+                <rect x="13.5" y="10" width="5" height="19" fill="#FF2E6D" />
+                <rect x="14.5" y="10" width="1.5" height="19" fill="#FF7096" />
+                <rect x="3" y="11.5" width="26" height="3" fill="#FF2E6D" opacity="0.25" />
+                <path d="M16 11 C13 5 7 5 9 9 C11 12 16 11 16 11 Z" fill="#FF2E6D" />
+                <path d="M16 11 C19 5 25 5 23 9 C21 12 16 11 16 11 Z" fill="#FF2E6D" />
+                <circle cx="16" cy="11" r="2.5" fill="#E61E5C" />
+                <circle cx="15.5" cy="10.5" r="1" fill="#FFA3BD" />
+              </svg>
+            </span>
+            <span class="btn-label-text">OPEN YOUR GIFT</span>
+            <span class="btn-chevron">›</span>
+          </button>
+        </div>
+
+      </div><!-- /welcome-content -->
+    </section>
+
+    <!-- ═══════ SCREEN 2: Birthday Cake ═══════ -->
+    <section id="screen-cake" class="screen">
+      <!-- Top Colorful Triangle Party Buntings Banner -->
+      <div class="party-bunting-container" aria-hidden="true">
+        <svg class="bunting-svg bunting-left" viewBox="0 0 320 80" preserveAspectRatio="none">
+          <path d="M 0 10 Q 160 55 320 20" stroke="#E2BED5" stroke-width="2" fill="none" />
+          <!-- Colorful Pennants: purple, pink, yellow, blue, teal, orange -->
+          <polygon points="15,14 45,19 30,58" fill="#70D6FF" />
+          <polygon points="55,21 85,27 70,68" fill="#FF70A6" />
+          <polygon points="95,29 125,35 110,75" fill="#FFD670" />
+          <polygon points="135,37 165,42 150,80" fill="#B388FF" />
+          <polygon points="175,42 205,43 190,80" fill="#FF9770" />
+          <polygon points="215,42 245,39 230,76" fill="#70D6FF" />
+          <polygon points="255,37 285,32 270,69" fill="#FF70A6" />
+        </svg>
+        <svg class="bunting-svg bunting-right" viewBox="0 0 320 80" preserveAspectRatio="none">
+          <path d="M 0 20 Q 160 55 320 10" stroke="#E2BED5" stroke-width="2" fill="none" />
+          <polygon points="15,22 45,28 30,68" fill="#FF70A6" />
+          <polygon points="55,30 85,37 70,76" fill="#70D6FF" />
+          <polygon points="95,38 125,43 110,80" fill="#FFD670" />
+          <polygon points="135,43 165,42 150,80" fill="#B388FF" />
+          <polygon points="175,41 205,35 190,75" fill="#FF9770" />
+          <polygon points="215,33 245,27 230,68" fill="#FF70A6" />
+          <polygon points="255,25 285,19 270,58" fill="#B388FF" />
+        </svg>
+      </div>
+
+      <!-- Top Pill Badge -->
+      <div class="pill-badge cake-pill" id="badge-cake">
+        <span>🎂</span>
+        <span>MAKE A WISH</span>
+      </div>
+
+      <!-- Main Heading with Hand-drawn Heart Doodle -->
+      <div class="heading-wrapper cake-heading-wrap">
+        <h2 class="screen-title cake-title" id="cake-title">light the candles</h2>
+        <svg class="cake-heading-heart" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+          <path d="M12 21 C6 15 6 7.5 13 6 C17 5 18 8 19 9.5 C20 8 21 5 25 6 C32 7.5 32 15 26 21 L19 28 Z"
+            stroke="#FF6B93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          <line x1="28" y1="9" x2="33" y2="7" stroke="#FF8EA5" stroke-width="1.8" stroke-linecap="round" />
+          <line x1="31" y1="15" x2="35" y2="16" stroke="#FF8EA5" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </div>
+      <p class="screen-subtitle cake-sub" id="cake-subtitle"></p>
+
+      <!-- Decorative Floating Balloons & Clouds (Live subtle floating animations) -->
+      <div class="cake-scene-decorations" aria-hidden="true">
+        <!-- Fluffy Background Cloud Shapes across the scene -->
+        <div class="cake-cloud-puff c-cloud-left-top">
+          <span class="cake-cloud-shape"></span>
+        </div>
+        <div class="cake-cloud-puff c-cloud-right-top">
+          <span class="cake-cloud-shape"></span>
+        </div>
+        <div class="cake-cloud-puff c-cloud-left-bottom">
+          <span class="cake-cloud-shape"></span>
+        </div>
+        <div class="cake-cloud-puff c-cloud-right-bottom">
+          <span class="cake-cloud-shape"></span>
+        </div>
+        <div class="cake-cloud-puff c-cloud-center-back">
+          <span class="cake-cloud-shape"></span>
+        </div>
+
+        <!-- Left Side Clouds, Balloons & Gift Boxes -->
+        <div class="decor-cluster cluster-left">
+          <div class="balloon-group b-group-left">
+            <span class="heart-balloon balloon-pink">💗</span>
+            <span class="heart-balloon balloon-purple">💜</span>
+            <span class="heart-balloon balloon-yellow">💛</span>
+          </div>
+          <!-- Cute Gift Box -->
+          <div class="cake-gift-box gift-left">🎁</div>
+        </div>
+
+        <!-- Right Side Clouds, Balloons & Gift Boxes -->
+        <div class="decor-cluster cluster-right">
+          <div class="balloon-group b-group-right">
+            <span class="heart-balloon balloon-pink-lg">💖</span>
+            <span class="heart-balloon balloon-pastel-purple">💜</span>
+            <span class="heart-balloon balloon-blush">💗</span>
+          </div>
+          <!-- Cute Gift Box -->
+          <div class="cake-gift-box gift-right">🎁</div>
+        </div>
+
+        <!-- Background Floating Hearts & Twinkles -->
+        <span class="bg-heart-pop bh-1">♡</span>
+        <span class="bg-heart-pop bh-2">💕</span>
+        <span class="bg-heart-pop bh-3">♡</span>
+        <span class="bg-heart-pop bh-4">💖</span>
+        <span class="bg-heart-pop bh-5">✨</span>
+        <span class="bg-heart-pop bh-6">⭐</span>
+      </div>
+
+      <!-- Animated Cute Cat Companions across the scene -->
+      <div class="scene-kittens-layer" aria-hidden="true">
+        <!-- 1. Cat sleeping on fluffy cloud (Top Left) -->
+        <div class="kitten-item cat-top-left">
+          <img src="assets/cat-sleeping-cloud-removebg-preview.png" alt="Cute kitten sleeping on cloud"
+            class="kitten-sticker">
+        </div>
+
+        <!-- 2. Cat peeking over cloud (Top Right) -->
+        <div class="kitten-item cat-top-right">
+          <img src="assets/cat-sleeping-cloud-removebg-preview.png" alt="Cute kitten peeking over cloud"
+            class="kitten-sticker">
+        </div>
+
+        <!-- 3. Joyful playful kitten leaping near cake (Mid Left) -->
+        <div class="kitten-item cat-mid-left">
+          <img src="assets/kitten-cloud.jpg" alt="Playful cute kitten" class="kitten-sticker mini-medallion">
+        </div>
+
+        <!-- 4. Playful kitten leaning on cake with party hat (Center Right) -->
+        <div class="kitten-item cat-cake-peek">
+          <img src="assets/mascot-kitten.jpg" alt="Kitten celebrating birthday"
+            class="kitten-sticker circle-sticker with-hat">
+          <span class="kitten-party-hat">🎉</span>
+        </div>
+
+        <!-- 5. Adorable kitten sitting holding heart (Bottom Right) -->
+        <div class="kitten-item cat-bot-right">
+          <img src="assets/memory2.jpg" alt="Sweet kitten holding heart" class="kitten-sticker circle-sticker">
+        </div>
+      </div>
+
+      <!-- ═════════ THE CAKE & CANDLES ═════════ -->
+      <div class="cake-wrapper">
+        <!-- 3 Striped Candles Row -->
+        <div class="candles-row">
+          <div class="candle" id="candle-1" role="button" aria-label="Candle 1">
+            <div class="candle-flame" id="flame-1"></div>
+            <div class="candle-stick">
+              <div class="candle-wick"></div>
+              <div class="candle-spirals"></div>
+            </div>
+          </div>
+          <div class="candle" id="candle-2" role="button" aria-label="Candle 2">
+            <div class="candle-flame" id="flame-2"></div>
+            <div class="candle-stick">
+              <div class="candle-wick"></div>
+              <div class="candle-spirals"></div>
+            </div>
+          </div>
+          <div class="candle" id="candle-3" role="button" aria-label="Candle 3">
+            <div class="candle-flame" id="flame-3"></div>
+            <div class="candle-stick">
+              <div class="candle-wick"></div>
+              <div class="candle-spirals"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Tier Pastel Decorated Cake -->
+        <div class="cake" id="cake-body" role="button" aria-label="Tap to cut cake">
+          <!-- Top Tier: Creamy White with Confetti Hearts & Swirl Frosting -->
+          <div class="cake-tier cake-tier-top">
+            <div class="tier-frosting-swirls top-swirls"></div>
+            <div class="tier-drip drip-cream"></div>
+            <div class="tier-decorations">
+              <span class="decor-dot d1">💗</span>
+              <span class="decor-dot d2">💛</span>
+              <span class="decor-dot d3">🩵</span>
+            </div>
+          </div>
+
+          <!-- Middle Tier: Pastel Rose Pink with Heart Medallions & Cream Swirls -->
+          <div class="cake-tier cake-tier-middle">
+            <div class="tier-frosting-swirls mid-swirls"></div>
+            <div class="tier-hearts-garland">
+              <span class="t-heart">💖</span>
+              <span class="t-heart">💖</span>
+              <span class="t-heart">💖</span>
+            </div>
+          </div>
+
+          <!-- Bottom Tier: Soft Lilac Lavender with Draped Ribbons & Beaded Border -->
+          <div class="cake-tier cake-tier-bottom">
+            <div class="tier-frosting-swirls bot-swirls"></div>
+            <div class="tier-ribbon-drapes">
+              <svg class="drape-svg" viewBox="0 0 300 45" preserveAspectRatio="none">
+                <path d="M 0 10 Q 50 35 100 10 Q 150 35 200 10 Q 250 35 300 10" stroke="#EAD5F0" stroke-width="4.5"
+                  fill="none" stroke-linecap="round" />
+                <circle cx="100" cy="10" r="4.5" fill="#FF9EBE" />
+                <circle cx="200" cy="10" r="4.5" fill="#FF9EBE" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- White Pedestal Stand / Cake Plate -->
+          <div class="cake-pedestal">
+            <div class="pedestal-top"></div>
+            <div class="pedestal-stem"></div>
+            <div class="pedestal-base"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pill Candle Buttons (Matches Reference Image) -->
+      <div class="candle-controls">
+        <button class="candle-btn pill-candle-btn" id="candle-btn-1" data-candle="1">
+          <span class="btn-sparkle-icon">✦</span>
+          <span class="btn-text">CANDLE 1</span>
+        </button>
+        <button class="candle-btn pill-candle-btn" id="candle-btn-2" data-candle="2">
+          <span class="btn-sparkle-icon">✦</span>
+          <span class="btn-text">CANDLE 2</span>
+        </button>
+        <button class="candle-btn pill-candle-btn" id="candle-btn-3" data-candle="3">
+          <span class="btn-sparkle-icon">✦</span>
+          <span class="btn-text">CANDLE 3</span>
+        </button>
+      </div>
+
+      <!-- Instruction Helper Prompt with Sparkles -->
+      <p class="cake-helper" id="cake-helper">✦ tap each candle to light it up ✦</p>
+
+      <!-- Progress Dots -->
+      <div class="progress-dots" id="candle-progress">
+        <span class="progress-dot" id="dot-1"></span>
+        <span class="progress-dot" id="dot-2"></span>
+        <span class="progress-dot" id="dot-3"></span>
+      </div>
+    </section>
+
+    <!-- ═══════ SCREEN 4: Birthday Wish + Music ═══════ -->
+    <section id="screen-wish" class="screen">
+      <!-- Ambient Live Background Twinkles & Drifting Petals -->
+      <div class="wish-ambient-layer" aria-hidden="true">
+        <span class="garden-sparkle gs-1">✦</span>
+        <span class="garden-sparkle gs-2">✨</span>
+        <span class="garden-sparkle gs-3">✧</span>
+        <span class="garden-sparkle gs-4">✦</span>
+        <span class="garden-petal gp-1">🌸</span>
+        <span class="garden-petal gp-2">🌸</span>
+        <span class="garden-heart-drift gh-1">♡</span>
+        <span class="garden-heart-drift gh-2">💕</span>
+      </div>
+
+      <!-- Main Center Glass Card -->
+      <div class="glass-card wish-card">
+        <!-- Floating Cherry Blossom Sprigs at top left corner -->
+        <div class="wish-corner-blossom" aria-hidden="true">
+          <span class="sprig-bloom">🌸</span>
+          <span class="sprig-bud">🌸</span>
+          <span class="sprig-leaf">🌿</span>
+        </div>
+
+        <!-- Kitten Medallion at top right of the card (matching reference) -->
+        <div class="wish-avatar-container">
+          <div class="wish-avatar-ring">
+            <img class="avatar-badge" src="assets/cat-sleeping-cloud-removebg-preview.png" alt="Mascot Kitten">
+          </div>
+          <!-- Sparkles & hearts around avatar -->
+          <span class="wish-avatar-sparkle">✦</span>
+        </div>
+
+        <!-- Pill Badge -->
+        <div class="pill-badge" id="badge-wish">
+          <span class="badge-star-icon">✦</span>
+          <span>A LITTLE BIRTHDAY WISH</span>
+          <span class="badge-star-icon">✦</span>
+        </div>
+
+        <!-- Title with Hand-Drawn Pink Doodle Hearts -->
+        <div class="wish-title-wrap">
+          <!-- Floating Heart Doodles matching screenshot -->
+          <span class="wish-doodle-heart wdh-outline-top-left" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FF3377" stroke-width="2.3" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </span>
+
+          <span class="wish-doodle-heart wdh-solid-mid-left" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="#FFA5C0">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </span>
+
+          <span class="wish-doodle-heart wdh-solid-low-left" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="#FF4D85">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </span>
+
+          <span class="wish-doodle-heart wdh-solid-top-right" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="#FF2D6D">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </span>
+
+          <span class="wish-doodle-heart wdh-solid-mid-right" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="#FF4D85">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </span>
+
+          <h2 class="screen-title wish-heading" id="wish-title">
+            <span class="wish-title-line1">Happy Birthday</span>
+            <span class="wish-title-name-container">
+              <span class="wish-title-name">Lahar<span class="name-i-wrap"><span class="dotless-i">ı</span><span
+                    class="name-heart-dot">♥</span></span></span>
+              <!-- Tail flourish ending with cute outline heart -->
+              <span class="wish-name-flourish" aria-hidden="true">
+                <svg viewBox="0 0 170 32" fill="none">
+                  <path d="M 8 10 C 45 22, 95 24, 136 12 Q 142 10, 145 8" stroke="#FF2E6D" stroke-width="2.4"
+                    stroke-linecap="round" />
+                  <g transform="translate(138, -3) scale(0.62) rotate(20 12 12)">
+                    <path
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                      stroke="#FF2E6D" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                  </g>
+                </svg>
+              </span>
+            </span>
+          </h2>
+        </div>
+
+        <p class="wish-message" id="wish-message">Wishing you lots of happiness, endless smiles, and <span
+            class="highlight-pink">beautiful moments! 💗🌸</span> May your days always be filled with laughter, fun, and
+          little reasons to smile.<br>Stay the same crazy, cute, and wonderful person you are! ✨</p>
+
+        <!-- Music Player Web Component Container -->
+        <div class="music-player" id="music-player">
+          <!-- Album vinyl art with spinning groove effect -->
+          <div class="album-cover-container">
+            <img class="music-album-art" id="album-art" src="assets/album-cover.jpg" alt="Album cover">
+            <div class="album-vinyl-center"></div>
+          </div>
+
+          <div class="music-info">
+            <div class="music-header-row">
+              <div>
+                <div class="music-title" id="music-title">A song for your day</div>
+                <div class="music-artist" id="music-artist">WITH LOVE</div>
+              </div>
+              <div class="music-notes-deco" aria-hidden="true">
+                <span class="music-note-float mn-1">♪</span>
+                <span class="music-note-float mn-2">♥</span>
+              </div>
+            </div>
+
+            <div class="music-controls">
+              <button class="play-btn" id="play-btn" aria-label="Play or pause">
+                <svg class="play-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </button>
+
+              <div class="progress-container">
+                <div class="progress-bar-wrapper" id="progress-wrapper">
+                  <div class="progress-bar-fill" id="progress-fill"></div>
+                  <div class="progress-thumb"></div>
+                </div>
+                <div class="time-display">
+                  <span id="time-current">0:00</span>
+                  <span id="time-total">0:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="music-footnote" id="music-footnote">press play — i picked this one because it always reminds me of
+          you.</p>
+
+        <!-- Primary Pill Button to proceed to Album -->
+        <button id="btn-album" class="btn-primary wish-cta-btn">
+          <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <path d="M21 15l-5-5L5 21"></path>
+          </svg>
+          <span class="btn-text">SEE OUR ALBUM</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ═══════ SCREEN 5: Polaroid Album ═══════ -->
+    <section id="screen-album" class="screen">
+      <!-- Ambient Sparkles & Floating Hearts/Petals -->
+      <div class="album-ambient-layer" aria-hidden="true">
+        <span class="album-sparkle as-1">✦</span>
+        <span class="album-sparkle as-2">✨</span>
+        <span class="album-sparkle as-3">✧</span>
+        <span class="album-sparkle as-4">✦</span>
+        <span class="album-petal ap-1">🌸</span>
+        <span class="album-petal ap-2">🌸</span>
+        <span class="album-heart-float ah-1">♡</span>
+        <span class="album-heart-float ah-2">💕</span>
+      </div>
+
+      <!-- Top Header Container -->
+      <div class="album-header">
+        <div class="pill-badge" id="badge-album">
+          <span class="badge-cam">📷</span>
+          <span>OUR LITTLE ALBUM</span>
+          <span class="badge-sprig">🌸</span>
+        </div>
+        <div class="album-title-wrap">
+          <h2 class="screen-title" id="album-title">our little album</h2>
+          <svg class="album-title-doodle" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <path d="M12 21 C6 15 6 7.5 13 6 C17 5 18 8 19 9.5 C20 8 21 5 25 6 C32 7.5 32 15 26 21 L19 28 Z"
+              stroke="#FF6B93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <line x1="28" y1="9" x2="33" y2="7" stroke="#FF8EA5" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="album-heart-divider" aria-hidden="true">
+          <span class="flourish-dot">•</span>
+          <span class="divider-heart">♥</span>
+          <span class="flourish-dot">•</span>
+        </div>
+        <p class="screen-subtitle" id="album-subtitle">a few of my favourite moments with you ♡</p>
+      </div>
+
+      <!-- Center 3D Coverflow Carousel Block (5 Cards) -->
+      <div class="album-center-block">
+        <div class="album-wrapper">
+          <button class="carousel-btn" id="carousel-prev" aria-label="Previous photo">‹</button>
+
+          <div class="polaroid-carousel-stage" id="polaroid-stage">
+            <!-- Card 1 (Hamster) -->
+            <div class="polaroid carousel-card slot-active" id="polaroid-card-0" data-index="0">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets/Watercolor Birthday Portrait for Lahari.png" alt="Memory photo 1">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 01 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+
+            <!-- Card 2 (Kitten) -->
+            <div class="polaroid carousel-card slot-next" id="polaroid-card-1" data-index="1">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets/Temple Courtyard Selfie with Friends.png" alt="Memory photo 2">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 02 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+
+            <!-- Card 3 (Bunny Celebration) -->
+            <div class="polaroid carousel-card slot-far-next" id="polaroid-card-2" data-index="2">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets/Friends at a Temple Entrance.png" alt="Memory photo 3">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 03 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+
+            <!-- Card 4 (Sleepy Kittens) -->
+            <div class="polaroid carousel-card slot-far-prev" id="polaroid-card-3" data-index="3">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets/LBfrinds.jpeg" alt="Memory photo 4">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 04 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+
+            <!-- Card 5 (Kitten on Cloud) -->
+            <div class="polaroid carousel-card slot-prev" id="polaroid-card-4" data-index="4">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets/Nighttime Street Selfie with Friends.png" alt="Memory photo 5">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 05 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+
+            <div class="polaroid carousel-card slot-hidden" id="polaroid-card-5" data-index="5">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets\Mawa1.jpeg" alt="Memory photo 6">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 06 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+
+            <div class="polaroid carousel-card slot-hidden" id="polaroid-card-6" data-index="6">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets/mawa4.jpeg" alt="Memory photo 7">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 07 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+
+            <div class="polaroid carousel-card slot-hidden" id="polaroid-card-7" data-index="7">
+              <div class="polaroid-washi" aria-hidden="true"></div>
+              <div class="polaroid-inner-frame">
+                <img class="polaroid-img" src="assets/trio3.jpeg" alt="Memory photo 8">
+              </div>
+              <div class="polaroid-tag-wrap">
+                <div class="polaroid-tag">MEMORY 08 / 08</div>
+                <span class="polaroid-tag-heart">♥</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="carousel-btn" id="carousel-next" aria-label="Next photo">›</button>
+        </div>
+
+        <!-- Interactive Memory Pagination Dots (8 Dots) -->
+        <div class="album-pagination" id="album-pagination" aria-label="Photo pagination">
+          <button class="album-dot active" data-index="0" aria-label="Memory 1"></button>
+          <button class="album-dot" data-index="1" aria-label="Memory 2"></button>
+          <button class="album-dot" data-index="2" aria-label="Memory 3"></button>
+          <button class="album-dot" data-index="3" aria-label="Memory 4"></button>
+          <button class="album-dot" data-index="4" aria-label="Memory 5"></button>
+          <button class="album-dot" data-index="5" aria-label="Memory 6"></button>
+          <button class="album-dot" data-index="6" aria-label="Memory 7"></button>
+          <button class="album-dot" data-index="7" aria-label="Memory 8"></button>
+        </div>
+      </div>
+
+      <div class="album-photo-preview" id="album-photo-preview" role="dialog" aria-modal="true" aria-label="Photo preview" aria-hidden="true">
+        <button class="album-photo-preview-close" id="album-photo-preview-close" type="button" aria-label="Close photo preview">×</button>
+        <img id="album-photo-preview-image" alt="Expanded album memory">
+      </div>
+
+      <!-- Bottom Action Button -->
+      <div class="album-bottom-block">
+        <p class="polaroid-caption" id="polaroid-caption" style="display: none;"></p>
+
+        <div class="album-btn-wrapper">
+          <span class="btn-side-sprig left-sprig" aria-hidden="true">🌸</span>
+
+          <button id="btn-bouquet" class="btn-primary album-cta-btn">
+            <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+            <span class="btn-text">READ MY LETTER</span>
+            <span class="btn-arrow">→</span>
+          </button>
+          <span class="btn-side-sprig right-sprig" aria-hidden="true">🌸</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ SCREEN 5: Envelope (Before Letter) ═══════ -->
+    <section id="screen-envelope" class="screen">
+      <!-- Decorative background sparkles, ribbons, floral clusters, and cloud puffs -->
+      <div class="envelope-bg-decor" aria-hidden="true">
+        <!-- Floating silk ribbons -->
+        <span class="decor-ribbon ribbon-left"></span>
+        <span class="decor-ribbon ribbon-right"></span>
+
+        <!-- Corner Floral Bouquets (Matching target reference bottom corners) -->
+        <div class="corner-flower-bouquet floral-bot-left">
+          <span class="flower-bloom fb-1">🌸</span>
+          <span class="flower-bloom fb-2">🌷</span>
+          <span class="flower-bloom fb-3">🌸</span>
+          <span class="flower-leaf fl-1">🌿</span>
+        </div>
+        <div class="corner-flower-bouquet floral-bot-right">
+          <span class="flower-bloom fb-1">🌸</span>
+          <span class="flower-bloom fb-2">🌷</span>
+          <span class="flower-bloom fb-3">🌸</span>
+          <span class="flower-leaf fl-2">🌿</span>
+        </div>
+
+        <!-- Soft puffy pastel clouds -->
+        <div class="envelope-cloud-puff ec-left">
+          <span class="cloud-puff-shape"></span>
+        </div>
+        <div class="envelope-cloud-puff ec-right">
+          <span class="cloud-puff-shape"></span>
+        </div>
+
+        <!-- Floating balloons & cute gift icons -->
+        <span class="bg-balloon-heart bgh-left">💗</span>
+        <span class="bg-balloon-heart bgh-right">💖</span>
+
+        <!-- Twinkles & drifting hearts -->
+        <span class="decor-sparkle sp-top-left">✦</span>
+        <span class="decor-sparkle sp-top-right">✧</span>
+        <span class="decor-sparkle sp-bot-left">✧</span>
+        <span class="decor-sparkle sp-bot-right">✦</span>
+        <span class="decor-heart-drift hd-1">♡</span>
+        <span class="decor-heart-drift hd-2">♡</span>
+        <span class="decor-heart-drift hd-3">♡</span>
+        <span class="decor-heart-drift hd-4">💕</span>
+        <span class="decor-heart-drift hd-5">💗</span>
+        <span class="decor-light-orb orb-1"></span>
+        <span class="decor-light-orb orb-2"></span>
+      </div>
+
+      <!-- Pill Badge -->
+      <div class="pill-badge envelope-pill" id="badge-envelope">
+        <svg class="badge-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#FF5E8A"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="3" fill="#FFE5EC" />
+          <path d="M22 6L12 13L2 6" stroke="#FF5E8A" />
+          <path
+            d="M12 9 C11.5 8.2 10.2 8.2 9.8 9 C9.3 9.8 12 11.8 12 11.8 C12 11.8 14.7 9.8 14.2 9 C13.8 8.2 12.5 8.2 12 9 Z"
+            fill="#FF5E8A" stroke="none" />
+        </svg>
+        <span>A BIRTHDAY SURPRISE</span>
+      </div>
+
+      <!-- Main Heading with Hand-Drawn Heart Doodle -->
+      <div class="heading-wrapper">
+        <h2 class="screen-title envelope-heading" id="envelope-title">a little something for you</h2>
+        <svg class="heading-doodle-heart" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M16 28 C8 20 8 10 17 8 C22 7 24 11 25 13 C26 11 28 7 33 8 C42 10 42 20 34 28 L25 38 Z"
+            stroke="#FF6B93" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+          <!-- cute burst rays around the heart -->
+          <line x1="38" y1="12" x2="43" y2="9" stroke="#FF8FA3" stroke-width="2" stroke-linecap="round" />
+          <line x1="42" y1="20" x2="47" y2="21" stroke="#FF8FA3" stroke-width="2" stroke-linecap="round" />
+          <line x1="32" y1="4" x2="33" y2="1" stroke="#FF8FA3" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <p class="screen-subtitle envelope-sub" id="envelope-subtitle">happy birthday ♡</p>
+
+      <div class="envelope-wrapper">
+        <!-- Floating hearts above mascot -->
+        <div class="floating-hearts">
+          <span class="floating-heart">💕</span>
+          <span class="floating-heart">💗</span>
+          <span class="floating-heart">💖</span>
+          <span class="floating-heart">💝</span>
+        </div>
+
+        <!-- Mascot Kitten Medallion on envelope -->
+        <div class="kitten-medallion-container">
+          <div class="kitten-medallion-ring">
+            <img class="mascot-img kitten-medallion-img" src="assets/kitten-cloud.jpg"
+              alt="Cute kitten on a cloud with tiny hearts">
+          </div>
+          <!-- Sparkles around medallion -->
+          <span class="medallion-twinkle mt-1">✦</span>
+          <span class="medallion-twinkle mt-2">✧</span>
+          <span class="medallion-heart-doodle mh-left">♡</span>
+          <span class="medallion-heart-doodle mh-right">♡</span>
+        </div>
+
+        <!-- Envelope -->
+        <div class="envelope-body">
+          <!-- Back inside background of the envelope -->
+          <div class="envelope-interior"></div>
+
+          <!-- Left & Right Fold Shading Details -->
+          <div class="envelope-fold-left"></div>
+          <div class="envelope-fold-right"></div>
+          <div class="envelope-fold-bottom"></div>
+
+          <!-- Delicate Curved Translucent Pink Ribbon Band -->
+          <svg class="envelope-ribbon-curved" viewBox="0 0 440 70" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FFAFC7" stop-opacity="0.6" />
+                <stop offset="30%" stop-color="#FF8DAE" stop-opacity="0.85" />
+                <stop offset="50%" stop-color="#FFA8C1" stop-opacity="0.95" />
+                <stop offset="70%" stop-color="#FF8DAE" stop-opacity="0.85" />
+                <stop offset="100%" stop-color="#FFAFC7" stop-opacity="0.6" />
+              </linearGradient>
+              <filter id="ribbonShadow" x="-10%" y="-20%" width="120%" height="160%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#E8618A" flood-opacity="0.32" />
+              </filter>
+            </defs>
+            <path d="M 0 16 Q 220 54 440 16 L 440 28 Q 220 66 0 28 Z" fill="url(#ribbonGrad)"
+              filter="url(#ribbonShadow)" />
+            <path d="M 0 18 Q 220 56 440 18" stroke="rgba(255,255,255,0.7)" stroke-width="1.2" fill="none" />
+          </svg>
+
+          <!-- Envelope Flap with Authentic Curved Scallop Lace Edge -->
+          <div class="envelope-flap" id="envelope-flap">
+            <!-- Scalloped Lace SVG Base of Flap -->
+            <svg class="flap-scallop-svg" viewBox="0 0 440 140" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="flapGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#FFFDF9" />
+                  <stop offset="70%" stop-color="#FFF8EE" />
+                  <stop offset="100%" stop-color="#FFF0DF" />
+                </linearGradient>
+                <filter id="flapShadow" x="-5%" y="0%" width="110%" height="120%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#DDA6B5" flood-opacity="0.35" />
+                </filter>
+              </defs>
+              <!-- Elegant curved triangular flap with scalloped border -->
+              <path d="M 0 0 
+                       L 440 0 
+                       L 440 18
+                       C 420 20, 395 24, 375 32
+                       C 350 42, 325 54, 290 75
+                       C 260 92, 235 110, 220 118
+                       C 205 110, 180 92, 150 75
+                       C 115 54, 90 42, 65 32
+                       C 45 24, 20 20, 0 18
+                       Z" fill="url(#flapGrad)" filter="url(#flapShadow)" />
+
+              <!-- Delicate lace scallops along the curved edge -->
+              <path
+                d="M 0 20 Q 20 22 40 27 Q 60 32 80 40 Q 100 48 120 58 Q 140 68 160 80 Q 180 92 200 106 Q 210 113 220 120 Q 230 113 240 106 Q 260 92 280 80 Q 300 68 320 58 Q 340 48 360 40 Q 380 32 400 27 Q 420 22 440 20"
+                stroke="#F6D5DC" stroke-width="3" stroke-dasharray="1 8" stroke-linecap="round" fill="none"
+                opacity="0.9" />
+
+              <!-- Botanical leafy branch flourishes on left & right of flap -->
+              <!-- Left branch -->
+              <path d="M 45 34 C 65 42 85 58 105 78" stroke="#E6A6B7" stroke-width="1.8" stroke-linecap="round"
+                fill="none" />
+              <ellipse cx="62" cy="42" rx="4.5" ry="2.5" transform="rotate(-25 62 42)" fill="#FFB7C8" />
+              <ellipse cx="78" cy="53" rx="4.5" ry="2.5" transform="rotate(-25 78 53)" fill="#FFB7C8" />
+              <ellipse cx="94" cy="67" rx="4.2" ry="2.3" transform="rotate(-25 94 67)" fill="#FFB7C8" />
+              <circle cx="107" cy="80" r="2.5" fill="#FFA3B8" />
+
+              <!-- Right branch -->
+              <path d="M 395 34 C 375 42 355 58 335 78" stroke="#E6A6B7" stroke-width="1.8" stroke-linecap="round"
+                fill="none" />
+              <ellipse cx="378" cy="42" rx="4.5" ry="2.5" transform="rotate(25 378 42)" fill="#FFB7C8" />
+              <ellipse cx="362" cy="53" rx="4.5" ry="2.5" transform="rotate(25 362 53)" fill="#FFB7C8" />
+              <ellipse cx="346" cy="67" rx="4.2" ry="2.3" transform="rotate(25 346 67)" fill="#FFB7C8" />
+              <circle cx="333" cy="80" r="2.5" fill="#FFA3B8" />
+            </svg>
+          </div>
+
+          <!-- Glossy 3D Heart Wax Seal with Radiating Love Rays -->
+          <div class="wax-seal" id="wax-seal" role="button" aria-label="Tap seal to open envelope" tabindex="0">
+            <!-- Radiating pink sketch rays around heart seal -->
+            <svg class="seal-radiant-rays" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <line x1="22" y1="28" x2="14" y2="22" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+              <line x1="16" y1="46" x2="8" y2="46" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+              <line x1="22" y1="68" x2="14" y2="76" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+              <line x1="78" y1="28" x2="86" y2="22" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+              <line x1="84" y1="46" x2="92" y2="46" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+              <line x1="78" y1="68" x2="86" y2="76" stroke="#FF7EA5" stroke-width="2" stroke-linecap="round" />
+            </svg>
+
+            <!-- 3D Heart SVG Wax Seal -->
+            <svg class="seal-heart-svg" viewBox="0 0 80 74" fill="none">
+              <defs>
+                <radialGradient id="heartDepthGrad" cx="35%" cy="30%" r="65%">
+                  <stop offset="0%" stop-color="#FF9BBB" />
+                  <stop offset="35%" stop-color="#FF2E70" />
+                  <stop offset="75%" stop-color="#D91652" />
+                  <stop offset="100%" stop-color="#8F0730" />
+                </radialGradient>
+                <linearGradient id="rimHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.85)" />
+                  <stop offset="40%" stop-color="rgba(255,255,255,0.2)" />
+                  <stop offset="100%" stop-color="rgba(120,0,30,0.4)" />
+                </linearGradient>
+                <filter id="heartShadow" x="-20%" y="-15%" width="140%" height="150%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="5.5" flood-color="#C2185B" flood-opacity="0.48" />
+                </filter>
+              </defs>
+              <!-- Outer plump heart wax body -->
+              <path
+                d="M 40 68 C 38 66 12 48 5 32 C -2 16 7 2 24 3 C 33 3.5 37.5 9 40 12 C 42.5 9 47 3.5 56 3 C 73 2 82 16 75 32 C 68 48 42 66 40 68 Z"
+                fill="url(#heartDepthGrad)" filter="url(#heartShadow)" />
+              <!-- Glossy edge bevel stroke -->
+              <path
+                d="M 40 68 C 38 66 12 48 5 32 C -2 16 7 2 24 3 C 33 3.5 37.5 9 40 12 C 42.5 9 47 3.5 56 3 C 73 2 82 16 75 32 C 68 48 42 66 40 68 Z"
+                stroke="url(#rimHighlight)" stroke-width="2.2" fill="none" />
+              <!-- Top-left glass reflection sheen -->
+              <path d="M 16 12 C 22 7 28 8 32 12 C 26 13 20 17 15 23 C 13 20 13 15 16 12 Z"
+                fill="rgba(255, 255, 255, 0.72)" />
+              <!-- Centered Sweet White Embossed Heart -->
+              <path
+                d="M 40 45 C 39 43.5 28 35 24 27 C 21 21 24 15 31 15 C 35 15 38 18 40 20 C 42 18 45 15 49 15 C 56 15 59 21 56 27 C 52 35 41 43.5 40 45 Z"
+                fill="#FFF7FA" filter="drop-shadow(0 1px 2px rgba(130,0,40,0.35))" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <p class="seal-prompt" id="seal-prompt">TAP THE SEAL TO OPEN ✦</p>
+    </section>
+
+    <!-- ═══════ SCREEN 6: Stationery Letter ═══════ -->
+    <section id="screen-letter" class="screen">
+      <div class="letter-paper">
+        <!-- Washi tape -->
+        <div class="washi-tape top-left"></div>
+        <div class="washi-tape top-right"></div>
+        <span class="letter-sticker letter-sticker-flower" aria-hidden="true">🌸</span>
+        <span class="letter-sticker letter-sticker-sparkle" aria-hidden="true">✦</span>
+        <span class="letter-sticker letter-sticker-heart" aria-hidden="true">♡</span>
+
+        <!-- Mascot emblem (Cute small bunny sticker) -->
+        <img class="letter-emblem" src="assets/bunnpink-removebg-preview.png" alt="Birthday Bunny Mascot">
+
+        <div class="pill-badge" id="badge-letter">
+          <span class="badge-star-icon">✦</span>
+          <span>A LETTER, JUST FOR YOU</span>
+          <span class="badge-star-icon">✦</span>
+        </div>
+
+        <p class="letter-salutation" id="letter-salutation">Dearest Lahari,</p>
+
+
+        <div id="letter-body">
+          <p class="letter-paragraph">
+            there's so much i'd like to tell you, so i made this little
+            garden just for you — with our pictures, a song, and some
+            special wishes for your birthday.
+          </p>
+
+          <p class="letter-paragraph">
+            thank you for being such a good friend. thank you for the
+            silly jokes, the laughs, the little moments, and for always
+            being there. even when i don't say it, i truly appreciate
+            having you in my life. our friendship means a lot to me.
+          </p>
+
+          <p class="letter-paragraph">
+            on your birthday, i wish you lots of happiness, endless
+            smiles, and beautiful memories. no matter how busy life gets
+            or how much things change, i hope we always keep this friendship
+            special. we may tease each other, have silly fights, and laugh
+            over the smallest things, but those are the moments that make
+            our friendship beautiful. happy birthday! i'm really lucky
+            to have a friend like you. 💛
+          </p>
+        </div>
+
+        <div class="letter-divider">♡</div>
+
+        <p class="letter-signoff" id="letter-signoff">♡ with all my Grateful,</p>
+        <p class="letter-signature" id="letter-signature">— YOUR Friend</p>
+      </div>
+
+      <button id="btn-restart" class="btn-primary" style="margin-top:28px;">
+        <svg class="btn-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        <span>REFRESH PAGE</span>
+      </button>
+    </section>
+
+  </div><!-- /app-container -->
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
